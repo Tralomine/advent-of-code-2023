@@ -2,6 +2,7 @@ use std::fs;
 
 pub mod day1;
 pub mod day2;
+pub mod day3;
 
 fn main() {
     //read day 1 input
@@ -18,4 +19,9 @@ fn main() {
     println!("day 2 challenges :");
     println!("\tchall 1: {}", crate::day2::chall_1(&input_2));
     println!("\tchall 2: {}", crate::day2::chall_2(&input_2));
+
+    let input_3 = fs::read_to_string("input/day3").expect("can't read file 2");
+    println!("day 3 challenges :");
+    println!("\tchall 1: {}", crate::day3::chall_1(&input_3));
+    println!("\tchall 2: {}", crate::day3::chall_2(&input_3));
 }

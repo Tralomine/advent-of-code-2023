@@ -5,3 +5,5 @@ maybe this time, now that I setup a git and everything I'll manage to actually f
 well we are the 3 and I still haven't started yet, but for my defense it was my girlfriend's birthday
 
 ahah lmao 4 days now (I was tired okay)
+
+it is 4 am why am I still awake
