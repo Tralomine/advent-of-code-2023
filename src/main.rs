@@ -4,6 +4,7 @@ pub mod day1;
 pub mod day2;
 pub mod day3;
 pub mod day4;
+pub mod day5;
 
 fn main() {
     //read day 1 input
@@ -30,4 +31,9 @@ fn main() {
     println!("day 4 challenges :");
     println!("\tchall 1: {}", crate::day4::chall_1(&input_4));
     println!("\tchall 2: {}", crate::day4::chall_2(&input_4));
+
+    let input_5 = fs::read_to_string("input/day5").expect("can't read file 5");
+    println!("day 5 challenges :");
+    println!("\tchall 1: {}", crate::day5::chall_1(&input_5));
+    println!("\tchall 2: {}", crate::day5::chall_2(&input_5));
 }
