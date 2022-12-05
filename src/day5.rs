@@ -1,6 +1,6 @@
 use std::ops::Range;
 
-fn parse(s : &str) -> (usize, Vec<Vec<char>>) {
+fn parse_boxes(s : &str) -> (usize, Vec<Vec<char>>) {
     let lines : Vec<&str> = s.lines().collect();
     let i = {
         let mut i = 0;
@@ -30,23 +30,23 @@ fn parse(s : &str) -> (usize, Vec<Vec<char>>) {
     (i+2, parsed)
 }
 
+fn parse_line(line: &str) -> (usize, usize, usize) {
+    let s: Vec<&str> = line.split(" from ").collect();
+    let v1 = s[0];
+    let s: Vec<&str> = s[1].split(" to ").collect();
+    (   v1.parse::<usize>().expect("invalid line"),
+        s[0].parse::<usize>().expect("invalid line")-1,
+        s[1].parse::<usize>().expect("invalid line")-1
+    )
+}
+
 pub fn chall_1(s : &String) -> String {
-    let (start, mut boxes) = parse(s);
+    let (start, mut boxes) = parse_boxes(s);
 
     let lines : Vec<&str> = s.lines().collect();
 
     for i in {Range{start, end: lines.len()}} {
-        let (a, b, c) = {
-            let line = lines[i].strip_prefix("move ").expect("invalid line");
-            // dbg!(line);
-            let s: Vec<&str> = line.split(" from ").collect();
-            let v1 = s[0];
-            let s: Vec<&str> = s[1].split(" to ").collect();
-            (   v1.parse::<usize>().expect("invalid line"),
-                s[0].parse::<usize>().expect("invalid line")-1,
-                s[1].parse::<usize>().expect("invalid line")-1
-            )
-        };
+        let (a, b, c) = parse_line(lines[i].strip_prefix("move ").expect("invalid line"));
         for j in {Range{start: 0, end: a}} {
             let moving_box = boxes[b].pop().expect("empty column");
             boxes[c].push(moving_box);
@@ -61,21 +61,12 @@ pub fn chall_1(s : &String) -> String {
 }
 
 pub fn chall_2(s : &String) -> String {
-    let (start, mut boxes) = parse(s);
+    let (start, mut boxes) = parse_boxes(s);
 
     let lines : Vec<&str> = s.lines().collect();
 
     for i in {Range{start, end: lines.len()}} {
-        let (a, b, c) = {
-            let line = lines[i].strip_prefix("move ").expect("invalid line");
-            let s: Vec<&str> = line.split(" from ").collect();
-            let v1 = s[0];
-            let s: Vec<&str> = s[1].split(" to ").collect();
-            (   v1.parse::<usize>().expect("invalid line"),
-                s[0].parse::<usize>().expect("invalid line")-1,
-                s[1].parse::<usize>().expect("invalid line")-1
-            )
-        };
+        let (a, b, c) = parse_line(lines[i].strip_prefix("move ").expect("invalid line"));
         let mut stack : Vec<char> = Vec::new();
         for j in {Range{start: 0, end: a}} {
             let moving_box = boxes[b].pop().expect("empty column");
