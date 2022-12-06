@@ -17,7 +17,7 @@ fn parse_boxes(s : &str) -> (usize, Vec<Vec<char>>) {
         let l = lines[i];
         (l.as_bytes()[l.len()-2] - '0' as u8) as usize
     };
-    for j in {Range{start:0, end: box_nbr}} {
+    for _ in {Range{start:0, end: box_nbr}} {
         parsed.push(Vec::new());
     }
     for j in {Range{start: 0, end: i}}.rev() {
@@ -47,7 +47,7 @@ pub fn chall_1(s : &String) -> String {
 
     for i in {Range{start, end: lines.len()}} {
         let (a, b, c) = parse_line(lines[i].strip_prefix("move ").expect("invalid line"));
-        for j in {Range{start: 0, end: a}} {
+        for _ in {Range{start: 0, end: a}} {
             let moving_box = boxes[b].pop().expect("empty column");
             boxes[c].push(moving_box);
         }
@@ -68,7 +68,7 @@ pub fn chall_2(s : &String) -> String {
     for i in {Range{start, end: lines.len()}} {
         let (a, b, c) = parse_line(lines[i].strip_prefix("move ").expect("invalid line"));
         let mut stack : Vec<char> = Vec::new();
-        for j in {Range{start: 0, end: a}} {
+        for _ in {Range{start: 0, end: a}} {
             let moving_box = boxes[b].pop().expect("empty column");
             stack.push(moving_box);
         }
