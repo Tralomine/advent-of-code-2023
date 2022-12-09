@@ -9,3 +9,5 @@ ahah lmao 4 days now (I was tired okay)
 it is 4 am why am I still awake
 
 (yes I skipped day 7, I'll just get to it later)
+
+see? 7 wasn't even *that* hard (I hate parsers)
