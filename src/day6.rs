@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+// use std::collections::HashMap;
 
 //O(n²), *bad*
 fn has_duplicates(s : &[u8]) -> bool {
@@ -32,7 +32,7 @@ pub fn chall_1(s : &String) -> i32 {
             return i as i32+4;
         }
     }
-    return 0;
+    0
 }
 
 pub fn chall_2(s : &String) -> i32 {
@@ -42,5 +42,5 @@ pub fn chall_2(s : &String) -> i32 {
             return i as i32+14;
         }
     }
-    return 0;
+    0
 }

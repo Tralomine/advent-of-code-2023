@@ -1,5 +1,7 @@
 use std::fs;
-use std::time;
+// use std::time;
+// let now = time::Instant::now();
+// dbg!(now.elapsed());
 
 mod day1;
 mod day2;
@@ -7,6 +9,8 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
+mod day8;
 
 fn main() {
 
@@ -35,10 +39,19 @@ fn main() {
     println!("\tchall 1: {}", day5::chall_1(&input_5));
     println!("\tchall 2: {}", day5::chall_2(&input_5));
 
-    let input_6 = fs::read_to_string("input/day6").expect("can't read file 5");
+    let input_6 = fs::read_to_string("input/day6").expect("can't read file 6");
     println!("day 6 challenges :");
     println!("\tchall 1: {}", day6::chall_1(&input_6));
-    let now = time::Instant::now();
     println!("\tchall 2: {}", day6::chall_2(&input_6));
-    dbg!(now.elapsed());
+
+    let input_7 = fs::read_to_string("input/day7").expect("can't read file 7");
+    println!("day 7 challenges :");
+    println!("\tchall 1: {}", day7::chall_1(&input_7));
+    println!("\tchall 2: {}", day7::chall_2(&input_7));
+
+    let input_8 = fs::read_to_string("input/day8").expect("can't read file 8");
+    println!("day 8 challenges :");
+    println!("\tchall 1: {}", day8::chall_1(&input_8));
+    println!("\tchall 2: {}", day8::chall_2(&input_8));
+
 }

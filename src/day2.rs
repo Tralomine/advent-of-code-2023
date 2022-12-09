@@ -1,7 +1,6 @@
 pub fn chall_1(s : &String) -> i32 {
     let mut score = 0;
     for l in s.lines() {
-        // dbg!("{}", l.as_bytes()[0] as char);
         let opponent = l.as_bytes()[0] as char;
         let you = l.as_bytes()[2] as char;
         match opponent {
@@ -32,7 +31,6 @@ pub fn chall_1(s : &String) -> i32 {
 pub fn chall_2(s : &String) -> i32 {
     let mut score = 0;
     for l in s.lines() {
-        // dbg!("{}", l.as_bytes()[0] as char);
         let opponent = l.as_bytes()[0] as char;
         let you = l.as_bytes()[2] as char;
         match opponent {
@@ -57,4 +55,5 @@ pub fn chall_2(s : &String) -> i32 {
             _ => (),
         }
     }
-    score}
+    score
+}

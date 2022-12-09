@@ -1,7 +1,5 @@
-use std::ops::Range;
-
 fn parse_boxes(s : &str) -> (usize, Vec<Vec<char>>) {
-    let lines : Vec<&str> = s.lines().collect();
+    let lines: Vec<&str> = s.lines().collect();
     let i = {
         let mut i = 0;
         for (j, l) in lines.iter().enumerate() {
@@ -12,16 +10,16 @@ fn parse_boxes(s : &str) -> (usize, Vec<Vec<char>>) {
         }
         i
     };
-    let mut parsed : Vec<Vec<char>> = Vec::new();
+    let mut parsed = Vec::new();
     let box_nbr = {
         let l = lines[i];
         (l.as_bytes()[l.len()-2] - '0' as u8) as usize
     };
-    for _ in {Range{start:0, end: box_nbr}} {
+    for _ in 0..box_nbr {
         parsed.push(Vec::new());
     }
-    for j in {Range{start: 0, end: i}}.rev() {
-        for k in {Range{start: 0, end: box_nbr}} {
+    for j in (0..i).rev() {
+        for k in 0..box_nbr {
             let current_box = lines[j].as_bytes()[k*4+1] as char;
             if current_box == ' ' {continue;}
             parsed[k].push(current_box);
@@ -31,23 +29,21 @@ fn parse_boxes(s : &str) -> (usize, Vec<Vec<char>>) {
 }
 
 fn parse_line(line: &str) -> (usize, usize, usize) {
-    let s: Vec<&str> = line.split(" from ").collect();
-    let v1 = s[0];
-    let s: Vec<&str> = s[1].split(" to ").collect();
-    (   v1.parse::<usize>().expect("invalid line"),
-        s[0].parse::<usize>().expect("invalid line")-1,
-        s[1].parse::<usize>().expect("invalid line")-1
-    )
+    let line = line.strip_prefix("move ").expect("invalid line");
+    let line = line.replace(" from ", " to ");
+    let v: Vec<&str> = line.split(" to ").collect();
+    (   v[0].parse::<usize>().expect("invalid line"),
+        v[1].parse::<usize>().expect("invalid line")-1,
+        v[2].parse::<usize>().expect("invalid line")-1)
 }
 
 pub fn chall_1(s : &String) -> String {
     let (start, mut boxes) = parse_boxes(s);
+    let lines: Vec<&str> = s.lines().collect();
 
-    let lines : Vec<&str> = s.lines().collect();
-
-    for i in {Range{start, end: lines.len()}} {
-        let (a, b, c) = parse_line(lines[i].strip_prefix("move ").expect("invalid line"));
-        for _ in {Range{start: 0, end: a}} {
+    for i in start..lines.len() {
+        let (a, b, c) = parse_line(lines[i]);
+        for _ in 0..a {
             let moving_box = boxes[b].pop().expect("empty column");
             boxes[c].push(moving_box);
         }
@@ -62,13 +58,12 @@ pub fn chall_1(s : &String) -> String {
 
 pub fn chall_2(s : &String) -> String {
     let (start, mut boxes) = parse_boxes(s);
+    let lines: Vec<&str> = s.lines().collect();
 
-    let lines : Vec<&str> = s.lines().collect();
-
-    for i in {Range{start, end: lines.len()}} {
-        let (a, b, c) = parse_line(lines[i].strip_prefix("move ").expect("invalid line"));
+    for i in start..lines.len() {
+        let (a, b, c) = parse_line(lines[i]);
         let mut stack : Vec<char> = Vec::new();
-        for _ in {Range{start: 0, end: a}} {
+        for _ in 0..a {
             let moving_box = boxes[b].pop().expect("empty column");
             stack.push(moving_box);
         }

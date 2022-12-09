@@ -7,3 +7,5 @@ well we are the 3 and I still haven't started yet, but for my defense it was my 
 ahah lmao 4 days now (I was tired okay)
 
 it is 4 am why am I still awake
+
+(yes I skipped day 7, I'll just get to it later)
