@@ -16,44 +16,18 @@ pub fn chall_1(s : &String) -> usize {
     let mut prev_pos = vec![];
     for l in s.lines() {
         let n = l.replace([' ', 'D', 'U', 'L', 'R'], "").parse::<i64>().unwrap();
-        match l.as_bytes()[0] as char {
-            'U' => {
-                for _ in 0..n {
-                    h.1 += 1;
-                    t = follow(h, t);
-                    if !prev_pos.contains(&t) {
-                        prev_pos.push(t);
-                    }
-                }
-            },
-            'D' => {
-                for _ in 0..n {
-                    h.1 -= 1;
-                    t = follow(h, t);
-                    if !prev_pos.contains(&t) {
-                        prev_pos.push(t);
-                    }
-                }
-            },
-            'R' =>  {
-                for _ in 0..n {
-                    h.0 += 1;
-                    t = follow(h, t);
-                    if !prev_pos.contains(&t) {
-                        prev_pos.push(t);
-                    }
-                }
-            },
-            'L' =>  {
-                for _ in 0..n {
-                    h.0 -= 1;
-                    t = follow(h, t);
-                    if !prev_pos.contains(&t) {
-                        prev_pos.push(t);
-                    }
-                }
-            },
-            _ => (),
+        for _ in 0..n {
+            match l.as_bytes()[0] as char {
+                'U' => h.1 += 1,
+                'D' => h.1 -= 1,
+                'R' => h.0 += 1,
+                'L' => h.0 -= 1,
+                _ => (),
+            }
+            t = follow(h, t);
+            if !prev_pos.contains(&t) {
+                prev_pos.push(t);
+            }
         }
     }
     prev_pos.len()
@@ -64,56 +38,20 @@ pub fn chall_2(s : &String) -> usize {
     let mut prev_pos = vec![];
     for l in s.lines() {
         let n = l.replace([' ', 'D', 'U', 'L', 'R'], "").parse::<i64>().unwrap();
-        match l.as_bytes()[0] as char {
-            'U' => {
-                for _ in 0..n {
-                    rope[0].1 += 1;
-                    for i in 0..rope.len()-1 {
-                        rope[i+1] = follow(rope[i], rope[i+1]);
-
-                    }
-                    if !prev_pos.contains(&rope[9]) {
-                        prev_pos.push(rope[9]);
-                    }
-                }
-            },
-            'D' => {
-                for _ in 0..n {
-                    rope[0].1 -= 1;
-                    for i in 0..rope.len()-1 {
-                        rope[i+1] = follow(rope[i], rope[i+1]);
-
-                    }
-                    if !prev_pos.contains(&rope[9]) {
-                        prev_pos.push(rope[9]);
-                    }
-                }
-            },
-            'R' =>  {
-                for _ in 0..n {
-                    rope[0].0 += 1;
-                    for i in 0..rope.len()-1 {
-                        rope[i+1] = follow(rope[i], rope[i+1]);
-
-                    }
-                    if !prev_pos.contains(&rope[9]) {
-                        prev_pos.push(rope[9]);
-                    }
-                }
-            },
-            'L' =>  {
-                for _ in 0..n {
-                    rope[0].0 -= 1;
-                    for i in 0..rope.len()-1 {
-                        rope[i+1] = follow(rope[i], rope[i+1]);
-
-                    }
-                    if !prev_pos.contains(&rope[9]) {
-                        prev_pos.push(rope[9]);
-                    }
-                }
-            },
-            _ => (),
+        for _ in 0..n {
+            match l.as_bytes()[0] as char {
+                'U' => rope[0].1 += 1,
+                'D' => rope[0].1 -= 1,
+                'R' => rope[0].0 += 1,
+                'L' => rope[0].0 -= 1,
+                _ => (),
+            }
+            for i in 0..rope.len()-1 {
+                rope[i+1] = follow(rope[i], rope[i+1]);
+            }
+            if !prev_pos.contains(&rope[9]) {
+                prev_pos.push(rope[9]);
+            }
         }
     }
     prev_pos.len()

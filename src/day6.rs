@@ -25,21 +25,21 @@ fn has_duplicates(s : &[u8]) -> bool {
 //     return false;
 // }
 
-pub fn chall_1(s : &String) -> i32 {
+pub fn chall_1(s : &String) -> usize {
     let s = s.as_bytes();
     for i in 0..s.len()-4 {
         if !has_duplicates(&s[i..i+4]) {
-            return i as i32+4;
+            return i+4;
         }
     }
     0
 }
 
-pub fn chall_2(s : &String) -> i32 {
+pub fn chall_2(s : &String) -> usize {
     let s = s.as_bytes();
     for i in 0..s.len()-14 {
         if !has_duplicates(&s[i..i+14]) {
-            return i as i32+14;
+            return i+14;
         }
     }
     0
