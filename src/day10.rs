@@ -41,9 +41,9 @@ pub fn chall_2(s: &String) -> () {
             let value = l.strip_prefix("addx ").unwrap().parse::<i64>().unwrap();
             regx += value;
         } else if l.starts_with("noop") {
-            cycle += 1;
             if (regx-cycle%40).abs() <= 1 { print!("#"); }
             else { print!("."); }
+            cycle += 1;
         }
     }
 }
