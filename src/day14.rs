@@ -7,6 +7,21 @@ enum Cave {
     Rock,
 }
 
+fn display_grid(grid: Vec<Vec<Cave>>) {
+    for x in &grid {
+        for y in x {
+            if *y == Cave::Air {
+                print!(" ");
+            } else if *y == Cave::Rock {
+                print!("█");
+            } else {
+                print!("#");
+            }
+        }
+        println!("")
+    }
+}
+
 fn get_dim(s: &str) -> ((usize, usize), (usize, usize)) {
     let mut min = (usize::MAX, 0);
     let mut max = (0, 0);
@@ -97,6 +112,7 @@ pub fn chall_1(s: &str) -> i64 {
 pub fn chall_2(s: &str) -> i64 {
     let (min, max) = get_dim(s);
     let mut sn = String::new();
+    sn += s;
     sn += &(min.0 - max.1 - 1).to_string();
     sn += ",";
     sn += &(max.1 + 2).to_string();
