@@ -15,6 +15,7 @@ mod day9;
 mod day10;
 mod day11;
 mod day12;
+mod day13;
 
 fn main() {
 
@@ -78,5 +79,10 @@ fn main() {
     println!("day 12 challenges :");
     println!("\tchall 1: {}", day12::chall_1(&input_12));
     println!("\tchall 2: {}", day12::chall_2(&input_12));
+
+    let input_13 = fs::read_to_string("input/day13.input").expect("can't read file 13");
+    println!("day 13 challenges :");
+    println!("\tchall 1: {}", day13::chall_1(&input_13));
+    println!("\tchall 2: {}", day13::chall_2(&input_13));
 
 }

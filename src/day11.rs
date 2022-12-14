@@ -94,7 +94,7 @@ pub fn chall_1(s : &String) -> usize {
     }
     let mut max = (0, 0);
     for m in monkeys {
-        dbg!(m.total_inspected);
+        // dbg!(m.total_inspected);
         if max.0 < m.total_inspected {
             max = (m.total_inspected, max.0);
         } else if max.1 < m.total_inspected {
@@ -111,7 +111,7 @@ pub fn chall_2(s : &String) -> usize {
     }
     let mut max = (0, 0);
     for m in monkeys {
-        dbg!(m.total_inspected);
+        // dbg!(m.total_inspected);
         if max.0 < m.total_inspected {
             max = (m.total_inspected, max.0);
         } else if max.1 < m.total_inspected {

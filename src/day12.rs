@@ -25,6 +25,7 @@ fn astar_weight(hm: &mut Vec<Vec<(u8, usize)>>, pos: (usize, usize), weight: usi
         return;
     }
     hm[pos.0][pos.1].1 = weight;
+    //should start with the lowest one, to avoid calculating some multiple times
     if pos.0 > 0 {
         let new_pos = (pos.0-1, pos.1);
         if hm[pos.0][pos.1].0 <= hm[new_pos.0][new_pos.1].0 + 1 {
@@ -59,7 +60,7 @@ pub fn chall_1(s : &String) -> usize {
 }
 
 pub fn chall_2(s : &String) -> usize {
-    let (mut heightmap, curr_pos, end) = parse(s);
+    let (mut heightmap, _, end) = parse(s);
     astar_weight(&mut heightmap, end, 0);
     let mut min = usize::MAX;
     for i in heightmap {
