@@ -175,6 +175,5 @@ pub fn chall_2(s: &str) -> i64 {
             pos2 = i as i64 + 1
         }
     }
-    dbg!(pos1, pos2);
     pos1 * pos2
 }
