@@ -7,7 +7,7 @@ enum Cave {
     Rock,
 }
 
-fn display_grid(grid: Vec<Vec<Cave>>) {
+fn _display_grid(grid: Vec<Vec<Cave>>) {
     for x in &grid {
         for y in x {
             if *y == Cave::Air {
