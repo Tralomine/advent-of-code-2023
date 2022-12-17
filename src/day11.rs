@@ -57,10 +57,11 @@ fn parse(s: &str) -> Vec<Monkey> {
 
 fn round(monkeys: Vec::<Monkey>, worry: bool) -> Vec::<Monkey> {
     let mut monkeys = monkeys;
-    let mut modulus = 1;
-    for m in &monkeys {
-        modulus *= m.divisibility;
-    }
+    let modulus = {
+        let mut modulus = 1;
+        for m in &monkeys {modulus *= m.divisibility;}
+        modulus
+    };
     for i in 0..monkeys.len() {
         monkeys[i].items.reverse();
         while monkeys[i].items.len() > 0 {
@@ -106,7 +107,7 @@ pub fn chall_1(s : &String) -> usize {
 
 pub fn chall_2(s : &String) -> usize {
     let mut monkeys = parse(s);
-    for _ in 0..10000 {
+    for _ in 0..10_000 {
         monkeys = round(monkeys, true);
     }
     let mut max = (0, 0);

@@ -115,7 +115,7 @@ pub fn chall_2(s: &str) -> i64 {
         min_max.reverse();
 
         //  check if there's a hole in the union of the ranges
-        let (min, mut max) = min_max.pop().unwrap();
+        let (_min, mut max) = min_max.pop().unwrap();
         while min_max.len() > 0 {
             if max > MAX {break;}
             let cur = min_max.pop().unwrap();
