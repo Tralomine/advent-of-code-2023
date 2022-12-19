@@ -164,7 +164,7 @@ pub fn chall_2(s: &str) -> usize {
                         }
                         if true_period {
                             period = period_candidate * min_period;
-                            println!("Period found! length {period}");
+                            // println!("Period found! length {period}");
                         } else {
                             period_check_min += 5;
                             lengths.clear();
@@ -183,7 +183,7 @@ pub fn chall_2(s: &str) -> usize {
             }
             if period_height_calc == 0 {
                 period_height = true_bottom - period_height; //end
-                println!("period height: {}", period_height);
+                // println!("period height: {}", period_height);
                 period_height_calc = usize::MAX;
                 finish = false;  //dirty hack
             }
@@ -299,7 +299,7 @@ pub fn chall_2(s: &str) -> usize {
             n += 1;
         } else {
             let left = MAX - n;
-            println!("calculating {} periods", left/period);
+            // println!("calculating {} periods", left/period);
             true_bottom += (left/period) * period_height; //add the height of all the reminding periods
             n = MAX - left%period + 1;  //move n to after everything when there's less than a period left
             finish = true;
