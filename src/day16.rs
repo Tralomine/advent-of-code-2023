@@ -1,5 +1,4 @@
-use core::time;
-use std::collections::HashMap;
+use std::{collections::HashMap};
 use regex::Regex;
 
 #[derive(Clone, Debug)]
@@ -63,25 +62,19 @@ fn get_distance(a: &str, b: &str, map: &HashMap<String, Node>, dist_max: usize, 
     min
 }
 
-fn release_pressure(start: &str, valves: HashMap<String, Node>, time_left: i64) -> i64 {
+fn release_pressure(start: &str, valves: &mut HashMap<String, Node>, time_left: i64) -> i64 {
     if time_left < 0 {return 0;}
-    // let mut distances = HashMap::new();
-    // for k in valves.keys() {
-    //     if !valves[k].is_open && valves[k].rate > 0 {
-    //         distances.insert(k.clone(), get_distance(start, k, &valves, valves.len(), &mut Vec::new()));
-    //     }
-    // }
 
     let mut pressure_released = 0;
-    for (i, (k, d)) in valves[start].tunnels.iter().enumerate() {
+    for (k, d) in valves[start].tunnels.clone().iter() {
         if valves[k].is_open {continue;}
-        let vk = valves.get(k).unwrap();
-        let mut new_valves = valves.clone();
-        new_valves.get_mut(k).unwrap().is_open = true;
+        let vk = valves.get(k).unwrap().clone();
+        valves.get_mut(k).unwrap().is_open = true;
         pressure_released = std::cmp::max(
             pressure_released,
-            (time_left-d-1)*vk.rate + release_pressure(k, new_valves, time_left-d-1)
+            (time_left-d-1)*vk.rate + release_pressure(k,valves, time_left-d-1)
         );
+        valves.get_mut(k).unwrap().is_open = false;
     }
 
     pressure_released
@@ -95,9 +88,6 @@ pub fn chall_1(s: &str) -> i64 {
         valves.insert(node.valve.clone(), node.clone());
     }
  
- 
- 
-
     for (k1, v) in valves.iter() {
         if v.rate != 0 || v.valve == "AA" {
             let mut tunnels = Vec::new();
@@ -112,11 +102,143 @@ pub fn chall_1(s: &str) -> i64 {
             
         }
     }
-    dbg!(&reduced);
+    // dbg!(&reduced);
 
-    release_pressure("AA", reduced, 30)
+    release_pressure("AA", &mut reduced, 30)
 }
 
+fn release_pressure2(starta: &str, startb: &str, timea: i64, timeb: i64, valves: &mut HashMap<String, Node>, time_left: i64) -> i64 {
+    if time_left < 0 {return 0;}
+
+    let mut pressure_released = 0;
+    let mut tunnels_a = Vec::new();
+    for (k, d) in valves[starta].tunnels.iter() {
+        if !valves[k].is_open {
+            tunnels_a.push((k.clone(), *d));
+        }
+    }
+    let mut tunnels_b = Vec::new();
+    for (k, d) in valves[startb].tunnels.iter() {
+        if !valves[k].is_open {
+            tunnels_b.push((k.clone(), *d));
+        }
+    }
+    if tunnels_a.len() == 1 || tunnels_b.len() == 1  {
+        if timea == 0 {
+            if tunnels_a[0].1 > timeb + tunnels_b[0].1 {
+                let k = &tunnels_b[0].0;
+                let d = tunnels_b[0].1;
+                let rate = valves.get(k).unwrap().rate;
+                pressure_released = (time_left-timeb-d-1)*rate;
+            }
+        }
+        if timeb == 0 {
+            if timea + tunnels_a[0].1 < tunnels_b[0].1 {
+                let k = &tunnels_a[0].0;
+                let d = tunnels_a[0].1;
+                let rate = valves.get(k).unwrap().rate;
+                pressure_released = (time_left-timea-d-1)*rate;
+            }
+        }
+    }
+
+    if timea <= 0 && timeb <= 0 {
+        for (i, (k1, d1)) in tunnels_a.iter().enumerate() {
+            for (j, (k2, d2)) in tunnels_b.iter().enumerate() {
+                if k1 == k2 {continue;}
+                // if time_left > 20 {
+                //     for _ in 0..26-time_left {
+                //         print!(" ");
+                //     }
+                //     println!("{i}: {k1}, {j}: {k2}");
+                // }
+
+                let rate1 = valves.get(k1).unwrap().rate;
+                let rate2 = valves.get(k2).unwrap().rate;
+                valves.get_mut(k1).unwrap().is_open = true;
+                valves.get_mut(k2).unwrap().is_open = true;
+                pressure_released = std::cmp::max(
+                    pressure_released,
+                    (time_left-d1-1)*rate1 + (time_left-d2-1)*rate2 + release_pressure2(k1, k2, *d1, *d2, valves, time_left-1)
+                );
+                valves.get_mut(k1).unwrap().is_open = false;
+                valves.get_mut(k2).unwrap().is_open = false;
+            }
+        }
+    } else if timea <= 0 {
+        for (i, (k, d)) in tunnels_a.iter().enumerate() {
+            // if time_left > 20 {
+            //     for _ in 0..26-time_left {
+            //         print!(" ");
+            //     }
+            //     println!("{i}: {k} you ({timeb})");
+            // }
+
+            let rate = valves.get(k).unwrap().rate;
+            valves.get_mut(k).unwrap().is_open = true;
+            pressure_released = std::cmp::max(
+                pressure_released,
+                (time_left-d-1)*rate + release_pressure2(k, startb, *d, timeb-1, valves, time_left-1)
+            );
+            valves.get_mut(k).unwrap().is_open = false;
+        }
+    } else if timeb <= 0 {
+        for (i, (k, d)) in tunnels_b.iter().enumerate() {
+            // if time_left > 20 {
+            //     for _ in 0..26-time_left {
+            //         print!(" ");
+            //     }
+            //     println!("{i}: {k} eleph ({timea})");
+            // }
+
+            let rate = valves.get(k).unwrap().rate;
+            valves.get_mut(k).unwrap().is_open = true;
+            pressure_released = std::cmp::max(
+                pressure_released,
+                (time_left-d-1)*rate + release_pressure2(starta, k, timea-1, *d, valves, time_left-1)
+            );
+            valves.get_mut(k).unwrap().is_open = false;
+        }
+
+    } else {
+        if timea > timeb {
+            pressure_released = release_pressure2(starta, startb, timea-timeb, 0, valves, time_left-timeb);
+        } else {
+            pressure_released = release_pressure2(starta, startb, 0, timeb-timea, valves, time_left-timea);
+        }
+    }
+
+    pressure_released
+}
+
+
 pub fn chall_2(s: &str) -> i64 {
-    0
+    let mut valves = HashMap::new();
+    let mut reduced = HashMap::new();
+    for l in s.lines() {
+        let node = parse_line(l);
+        valves.insert(node.valve.clone(), node.clone());
+    }
+ 
+    for (k1, v) in valves.iter() {
+        if v.rate != 0 || v.valve == "AA" {
+            let mut tunnels = Vec::new();
+            for k2 in valves.keys() {
+                if k1 != k2 && (valves[k2].rate > 0) {
+                    tunnels.push((k2.clone(), get_distance(k1, k2, &valves, valves.len(), &mut Vec::new())));
+                }
+            }
+            let mut v = v.clone();
+            v.tunnels = tunnels;
+            reduced.insert(k1.clone(), v);
+        }
+    }
+
+    if reduced["AA"].rate == 0 {
+        reduced.get_mut("AA").unwrap().is_open = true;
+    }
+
+    // println!("{:?}", &reduced);
+
+    release_pressure2("AA", "AA", 0, 0, &mut reduced, 26)
 }

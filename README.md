@@ -11,3 +11,5 @@ it is 4 am why am I still awake
 (yes I skipped day 7, I'll just get to it later)
 
 see? 7 wasn't even *that* hard (I hate parsers)
+
+I gave up on 16.2 for now and I'm now trying to catch up the last few days because I was too sick to do anything
