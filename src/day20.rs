@@ -28,8 +28,8 @@ pub fn chall_1(s: &str) -> i64 {
         let n = numbers.remove(index);
         indexes.remove(index);
         let index = {
-            let mut k = (n+index as i64);
-            if k == 0 {k = len as i64-1;}
+            let mut k = n+index as i64;
+            if k == 0 || k == len as i64 {k = len as i64 - 1;}
             if k > len as i64 {
                 (k%(len as i64 - 1)) as usize
             } else if k < 0 {
@@ -50,7 +50,6 @@ pub fn chall_1(s: &str) -> i64 {
             }
         } i
     };
-    dbg!(numbers[(pos_zero+1000)%len], numbers[(pos_zero+2000)%len], numbers[(pos_zero+3000)%len]);
     numbers[(pos_zero+1000)%len] + numbers[(pos_zero+2000)%len] + numbers[(pos_zero+3000)%len]
 }
 
@@ -78,8 +77,8 @@ pub fn chall_2(s: &str) -> i64 {
             let n = numbers.remove(index);
             indexes.remove(index);
             let index = {
-                let mut k = (n+index as i64);
-                if k == 0 {k = len as i64-1;}
+                let mut k = n+index as i64;
+                if k == 0 || k == len as i64 {k = len as i64 - 1;}
                 if k > len as i64 {
                     (k%(len as i64 - 1)) as usize
                 } else if k < 0 {
@@ -101,6 +100,5 @@ pub fn chall_2(s: &str) -> i64 {
             }
         } i
     };
-    dbg!(numbers[(pos_zero+1000)%len], numbers[(pos_zero+2000)%len], numbers[(pos_zero+3000)%len]);
     numbers[(pos_zero+1000)%len] + numbers[(pos_zero+2000)%len] + numbers[(pos_zero+3000)%len]
 }
