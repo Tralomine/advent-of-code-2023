@@ -40,7 +40,6 @@ fn parse_map(s: &str) -> Vec<Vec<Tile>> {
     }
     //pad the map with wrapping tiles
     map.insert(0, Vec::new());
-    map.push(Vec::new());
     for l in &mut map {
         while l.len() < max_len {
             l.push(Tile::None);
@@ -80,8 +79,8 @@ fn parse_instructions(s: &str) -> Vec<Instruction> {
 fn move_forward(map: &Vec<Vec<Tile>>, pos: (usize, usize), dir: i64, distance: i64) -> (usize, usize) {
     let mut pos = pos;
     'movef: for _ in 0..distance {
-        if dir == 0 {
-            pos = match map[pos.0][pos.1+1] {
+        pos = match dir {
+            0 => match map[pos.0][pos.1+1] {
                 Tile::Walkable => (pos.0, pos.1+1),
                 Tile::Wall => {break 'movef;},
                 Tile::None => {
@@ -92,10 +91,8 @@ fn move_forward(map: &Vec<Vec<Tile>>, pos: (usize, usize), dir: i64, distance: i
                         x += 1;
                     }
                 }
-            }
-        }
-        if dir == 2 {
-            pos = match map[pos.0][pos.1-1] {
+            },
+            2 => match map[pos.0][pos.1-1] {
                 Tile::Walkable => (pos.0, pos.1-1),
                 Tile::Wall => {break 'movef;},
                 Tile::None => {
@@ -106,10 +103,8 @@ fn move_forward(map: &Vec<Vec<Tile>>, pos: (usize, usize), dir: i64, distance: i
                         x -= 1;
                     }
                 }
-            }
-        }
-        if dir == 1 {
-            pos = match map[pos.0+1][pos.1] {
+            },
+            1 => match map[pos.0+1][pos.1] {
                 Tile::Walkable => (pos.0+1, pos.1),
                 Tile::Wall => {break 'movef;},
                 Tile::None => {
@@ -120,10 +115,8 @@ fn move_forward(map: &Vec<Vec<Tile>>, pos: (usize, usize), dir: i64, distance: i
                         y += 1;
                     }
                 }
-            }
-        }
-        if dir == 3 {
-            pos = match map[pos.0-1][pos.1] {
+            },
+            3 => match map[pos.0-1][pos.1] {
                 Tile::Walkable => (pos.0-1, pos.1),
                 Tile::Wall => {break 'movef;},
                 Tile::None => {
@@ -134,7 +127,8 @@ fn move_forward(map: &Vec<Vec<Tile>>, pos: (usize, usize), dir: i64, distance: i
                         y -= 1;
                     }
                 }
-            }
+            },
+            _ => break,
         }
     }
     pos
@@ -148,6 +142,7 @@ pub fn chall_1(s: &str) -> usize {
         for x in 1..map[1].len() {
             if map[1][x] == Tile::Walkable {
                 startx = x;
+                break;
             }
         }
         (1, startx)
@@ -171,7 +166,73 @@ pub fn chall_1(s: &str) -> usize {
     pos.0 * 1000 + pos.1 * 4 + dir as usize
 }
 
+//hardcoded for my input, I don't care enough
 fn move_cube(map: &Vec<Vec<Tile>>, pos: (usize, usize), dir: i64, distance: i64) -> ((usize, usize), i64) {
+    let mut pos = pos;
+    let mut dir = dir;
+    'movef: for _ in 0..distance {
+        pos = match dir {
+            0 => match map[pos.0][pos.1+1] {
+                Tile::Walkable => (pos.0, pos.1+1),
+                Tile::Wall => {break 'movef;},
+                Tile::None => {
+                    let mut newpos = pos;
+                    let mut newdir = dir; 
+                    if pos.0 < 51 {newpos = (151-pos.0, 100); newdir = 2;}
+                    else if pos.0 < 101 {newpos = (50, pos.0+50); newdir = 3;}
+                    else if pos.0 < 151 {newpos = (151-pos.0, 150); newdir = 2;}
+                    else if pos.0 < 201 {newpos = (150, pos.0-100); newdir = 3;}
+                    if map[newpos.0][newpos.1] == Tile::Wall {break 'movef;}
+                    dir = newdir;
+                    newpos
+                }
+            },
+            2 => match map[pos.0][pos.1-1] {
+                Tile::Walkable => (pos.0, pos.1-1),
+                Tile::Wall => {break 'movef;},
+                Tile::None => {
+                    let mut newpos = pos;
+                    let mut newdir = dir;
+                    if pos.0 < 51 {newpos = (151-pos.0, 1); newdir = 0;}
+                    else if pos.0 < 101 {newpos = (101, pos.0-50); newdir = 1;}
+                    else if pos.0 < 151 {newpos = (151-pos.0, 51); newdir = 0;}
+                    else if pos.0 < 201 {newpos = (1, pos.0-100); newdir = 1;}
+                    if map[newpos.0][newpos.1] == Tile::Wall {break 'movef;}
+                    dir = newdir;
+                    newpos
+                }
+            },
+            1 => match map[pos.0+1][pos.1] {
+                Tile::Walkable => (pos.0+1, pos.1),
+                Tile::Wall => {break 'movef;},
+                Tile::None => {
+                    let mut newpos = pos;
+                    let mut newdir = dir;
+                    if pos.1 < 51 {newpos = (1, pos.1+100);}
+                    else if pos.1 < 101 {newpos = (pos.1+100, 50); newdir = 2;}
+                    else if pos.1 < 151 {newpos = (pos.1-50, 100); newdir = 2;}
+                    if map[newpos.0][newpos.1] == Tile::Wall {break 'movef;}
+                    dir = newdir;
+                    newpos
+                }
+            },
+            3 => match map[pos.0-1][pos.1] {
+                Tile::Walkable => (pos.0-1, pos.1),
+                Tile::Wall => {break 'movef;},
+                Tile::None => {
+                    let mut newpos = pos;
+                    let mut newdir = dir;
+                    if pos.1 < 51 {newpos = (pos.1+50, 51); newdir = 0;}
+                    else if pos.1 < 101 {newpos = (pos.1+100, 1); newdir = 0;}
+                    else if pos.1 < 151 {newpos = (200, pos.1-100);}
+                    if map[newpos.0][newpos.1] == Tile::Wall {break 'movef;}
+                    dir = newdir;
+                    newpos
+                }
+            }
+            _ => break,
+        }
+    }
     (pos, dir)
 }
 
@@ -183,6 +244,7 @@ pub fn chall_2(s: &str) -> usize {
         for x in 1..map[1].len() {
             if map[1][x] == Tile::Walkable {
                 startx = x;
+                break;
             }
         }
         (1, startx)
@@ -199,8 +261,10 @@ pub fn chall_2(s: &str) -> usize {
                 dir += 1;
                 dir %= 4;
             },
-            //TODO implement the algorithm to wrap around a cube
-            Instruction::Forward(n) => (pos, dir) = move_cube(&map, pos, dir, n),
+            Instruction::Forward(n) => {
+                // std::io::stdin().read_line(&mut String::new());
+                (pos, dir) = move_cube(&map, pos, dir, n);
+            },
         }
     }
 
