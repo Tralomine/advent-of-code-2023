@@ -103,7 +103,7 @@ fn invert_op(v:i64, name: &str,monkeys: &mut HashMap<String, Monkey>) -> i64 {
     }
     let left = calc_monkey(&monkeys[name].operation.as_ref().unwrap().0.clone(), monkeys);
 
-    let mut value = 0;
+    let value;
     match cur.1 {
         Op::Add => value = v - left,
         Op::Mul => value = v / left,

@@ -1,3 +1,6 @@
+use std::time::Instant;
+
+
 #[derive(Debug)]
 #[derive(Copy)]
 #[derive(Clone)]
@@ -29,20 +32,33 @@ fn parse(s: &str) -> Blueprint {
 
 #[derive(Copy)]
 #[derive(Clone)]
+#[derive(Debug)]
 struct Factory {
     bp: Blueprint,
     resources: (usize, usize, usize),   //ore, clay, obsi
     robots: (usize, usize, usize, usize),//ore, clay, obsi and geodes
+    max_resources: (usize, usize, usize),
 }
 
 fn factory_cycle(f: &Factory, time_left: usize) -> usize {
     if time_left == 0 {return 0;}
     let mut f = *f;
     let mut new_robots = (false, false, false, false);
-    if f.bp.ore_price <= f.resources.0 {new_robots.0 = true;}
-    if f.bp.clay_price <= f.resources.0 {new_robots.1 = true;}
+    //try to build robots if we can, but not more than what we possibly need
+    if f.bp.ore_price <= f.resources.0 {
+        if f.robots.0 < f.max_resources.0 {
+            new_robots.0 = true;
+        }
+    }
+    if f.bp.clay_price <= f.resources.0 {
+        if f.robots.1 < f.max_resources.1 {
+            new_robots.1 = true;
+        }
+    }
     if f.bp.obsi_price.0 <= f.resources.0 && f.bp.obsi_price.1 <= f.resources.1 {
-        new_robots.2 = true;
+        if f.robots.2 < f.max_resources.1 {
+            new_robots.2 = true;
+        }
     }
     if f.bp.geode_price.0 <= f.resources.0 && f.bp.geode_price.1 <= f.resources.2 {
         new_robots.3 = true;
@@ -52,31 +68,51 @@ fn factory_cycle(f: &Factory, time_left: usize) -> usize {
     f.resources.1 += f.robots.1;
     f.resources.2 += f.robots.2;
 
-    let mut max_geodes = factory_cycle(&f, time_left-1);
+    let mut max_geodes = 0;
 
-    if new_robots.0 {
-        f.robots.0 += 1;
-        f.resources.0 -= f.bp.ore_price;
-        max_geodes = std::cmp::max(max_geodes, factory_cycle(&f, time_left-1));
-        f.resources.0 += f.bp.ore_price;
-        f.robots.0 -= 1;
+    if time_left > 12 {
+        for i in 0..32-time_left {
+            if i%8 == 0 {
+                print!("|");
+            } else {
+                print!("-");
+            }
+        }
+        println!("{:?}", f);
     }
-    if new_robots.1 {
-        f.robots.1 += 1;
-        f.resources.0 -= f.bp.clay_price;
-        max_geodes = std::cmp::max(max_geodes, factory_cycle(&f, time_left-1));
-        f.resources.0 += f.bp.clay_price;
-        f.robots.1 -= 1;
+
+    //if we can construct a geode robot each turn lets just do that, right
+    if !(f.robots.0 >= f.bp.geode_price.0 && f.robots.2 >= f.bp.geode_price.1) {
+        if new_robots.0 {
+            f.robots.0 += 1;
+            f.resources.0 -= f.bp.ore_price;
+            max_geodes = std::cmp::max(max_geodes, factory_cycle(&f, time_left-1));
+            f.resources.0 += f.bp.ore_price;
+            f.robots.0 -= 1;
+        }
+        if new_robots.1 {
+            f.robots.1 += 1;
+            f.resources.0 -= f.bp.clay_price;
+            max_geodes = std::cmp::max(max_geodes, factory_cycle(&f, time_left-1));
+            f.resources.0 += f.bp.clay_price;
+            f.robots.1 -= 1;
+        }
+        if new_robots.2 {
+            f.robots.2 += 1;
+            f.resources.0 -= f.bp.obsi_price.0;
+            f.resources.1 -= f.bp.obsi_price.1;
+            max_geodes = std::cmp::max(max_geodes, factory_cycle(&f, time_left-1));
+            f.resources.0 += f.bp.obsi_price.0;
+            f.resources.1 += f.bp.obsi_price.1;
+            f.robots.2 -= 1;
+        }
+        if f.resources.0 < f.max_resources.0 || f.resources.1 < f.max_resources.1 || f.resources.2 < f.max_resources.2 {
+            max_geodes = std::cmp::max(max_geodes, factory_cycle(&f, time_left-1));
+        }
+    } else {
+        return f.robots.3 + (time_left * (time_left+1))/2;
     }
-    if new_robots.2 {
-        f.robots.2 += 1;
-        f.resources.0 -= f.bp.obsi_price.0;
-        f.resources.1 -= f.bp.obsi_price.1;
-        max_geodes = std::cmp::max(max_geodes, factory_cycle(&f, time_left-1));
-        f.resources.0 += f.bp.obsi_price.0;
-        f.resources.1 += f.bp.obsi_price.1;
-        f.robots.2 -= 1;
-    }
+
     if new_robots.3 {
         f.robots.3 += 1;
         f.resources.0 -= f.bp.geode_price.0;
@@ -86,6 +122,7 @@ fn factory_cycle(f: &Factory, time_left: usize) -> usize {
         f.resources.2 += f.bp.geode_price.1;
         f.robots.3 -= 1;
     }
+
 
     // f.robots.0 += new_robots.0;
     // f.robots.1 += new_robots.1;
@@ -100,13 +137,42 @@ pub fn chall_1(s: &str) -> usize {
         blueprints.push(parse(l));
     }
     let mut total = 0;
+    let mut clock = Instant::now();
     for b in blueprints {
-        let f = Factory{bp: b,resources: (0, 0, 0),robots: (1, 0, 0, 0)};
-        // total += factory_cycle(&f, 24) * b.id;
+        let f = Factory{
+            bp: b,
+            resources: (0, 0, 0),
+            robots: (1, 0, 0, 0),
+            max_resources: (std::cmp::max(std::cmp::max(b.ore_price-1, b.clay_price), std::cmp::max(b.obsi_price.0, b.geode_price.0)), b.obsi_price.1, b.geode_price.1),
+        };
+        let result = factory_cycle(&f, 24) * b.id;
+        println!("factory {}: {result} in {:?}", b.id, clock.elapsed());
+        clock = Instant::now();
+        total += result;
     }
     total
 }
 
-pub fn chall_2(s: &str) -> i64 {
-    0
+pub fn chall_2(s: &str) -> usize {
+    let mut blueprints = Vec::new();
+    for l in s.lines() {
+        blueprints.push(parse(l));
+    }
+    let mut total = 1;
+    let mut clock = Instant::now();
+    for i in 0..3 {
+        if i > blueprints.len() {break;}    //example data
+        let b = blueprints[i];
+        let f = Factory{
+            bp: b,
+            resources: (0, 0, 0),
+            robots: (1, 0, 0, 0),
+            max_resources: (std::cmp::max(std::cmp::max(b.ore_price-1, b.clay_price), std::cmp::max(b.obsi_price.0, b.geode_price.0)), b.obsi_price.1, b.geode_price.1),
+        };
+        let result = factory_cycle(&f, 32);
+        println!("factory {}: {result} in {:?}", b.id, clock.elapsed());
+        clock = Instant::now();
+        total *= result;
+    }
+    total
 }

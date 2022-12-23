@@ -13,3 +13,5 @@ it is 4 am why am I still awake
 see? 7 wasn't even *that* hard (I hate parsers)
 
 I gave up on 16.2 for now and I'm now trying to catch up the last few days because I was too sick to do anything
+
+woke up, wrote a function in less than 5 minutes, it works, and the second challenge require literally just 2 more lines from that, okay brain
