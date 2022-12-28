@@ -92,9 +92,16 @@ pub fn chall_2(s: &str) -> i64 {
                     if grid[x][y-1][z] == Elem::Water {total_faces += 1;}
                     if grid[x][y][z+1] == Elem::Water {total_faces += 1;}
                     if grid[x][y][z-1] == Elem::Water {total_faces += 1;}
+                //     print!("{}", ansi_term::Colour::Red.paint("█"));
+                // } else if grid[x][y][z] == Elem::Water {
+                //     print!("{}", ansi_term::Colour::Blue.paint("~"));
+                // } else {
+                //     print!(" ")
                 }
             }
+            // println!("");
         }
+        // println!("");
     }
     total_faces
 }

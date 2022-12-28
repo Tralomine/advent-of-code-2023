@@ -14,7 +14,6 @@ pub fn chall_1(s: &str) -> i64 {
         indexes.push(i);
     }
 
-    // println!("{:?}", &numbers);
     for i in 0..len {
         let index = {
             let mut index = 0;
@@ -38,7 +37,6 @@ pub fn chall_1(s: &str) -> i64 {
         };
         numbers.insert(index, n);
         indexes.insert(index, i);
-        // println!("{:?}", &numbers);
     }
 
     let pos_zero = {
@@ -62,7 +60,6 @@ pub fn chall_2(s: &str) -> i64 {
         numbers[i] *= 811589153;
     }
 
-    // println!("{:?}", &numbers);
     for _ in 0..10 {
         for i in 0..len {
             let index = {
@@ -80,7 +77,7 @@ pub fn chall_2(s: &str) -> i64 {
                 let mut k = n+index as i64;
                 if k == 0 || k == len as i64 {k = len as i64 - 1;}
                 if k > len as i64 {
-                    (k%(len as i64 - 1)) as usize
+                    (k%(len as i64-1)) as usize
                 } else if k < 0 {
                     k.rem_euclid(len as i64-1) as usize
                 } else {k as usize}
@@ -88,7 +85,6 @@ pub fn chall_2(s: &str) -> i64 {
             numbers.insert(index, n);
             indexes.insert(index, i);
         }
-        // println!("{:?}", &numbers);
     }
 
     let pos_zero = {

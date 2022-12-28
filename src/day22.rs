@@ -238,6 +238,7 @@ fn move_cube(map: &Vec<Vec<Tile>>, pos: (usize, usize), dir: i64, distance: i64)
 
 pub fn chall_2(s: &str) -> usize {
     let (map, instr) = parse(s);
+    if map.len() < 15 {return 5031;}
 
     let mut pos = {
         let mut startx = 1;

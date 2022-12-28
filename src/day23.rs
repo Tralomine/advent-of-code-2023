@@ -31,7 +31,7 @@ fn parse(s: &str) -> Vec<Elf> {
     elves
 }
 
-fn print_elves(elves: &Vec<Elf>) {
+fn _print_elves(elves: &Vec<Elf>) {
     let mut min = (i64::MAX, i64::MAX);
     let mut max = (i64::MIN, i64::MIN);
     for e in elves {
@@ -130,7 +130,7 @@ pub fn chall_1(s: &str) -> i64 {
         dirs.push(d);
         elves = new_elves;
     }
-    // print_elves(&elves);
+    // _print_elves(&elves);
     let mut min = (i64::MAX, i64::MAX);
     let mut max = (i64::MIN, i64::MIN);
     for e in &elves {
@@ -193,6 +193,6 @@ pub fn chall_2(s: &str) -> i64 {
         count += 1;
         if !has_moved {break;}
     }
-    print_elves(&elves);
+    // _print_elves(&elves);
     count
 }

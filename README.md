@@ -16,4 +16,6 @@ I gave up on 16.2 for now and I'm now trying to catch up the last few days becau
 
 woke up, wrote a function in less than 5 minutes, it works, and the second challenge require literally just 2 more lines from that, okay brain
 
+22.2 is hardcoded for my puzzle input, you'll need to change the cube wrapping if you want to apply it to yours, I was too lazy to make a general function for that one
+
 probably won't do 24 and 25 right away
