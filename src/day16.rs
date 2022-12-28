@@ -128,20 +128,29 @@ fn release_pressure2(starta: &str, startb: &str, timea: i64, timeb: i64, valves:
         for (_i, (k1, d1)) in tunnels_a.iter().enumerate() {
             for (_j, (k2, d2)) in tunnels_b.iter().enumerate() {
                 if k1 == k2 {continue;}
-                // if time_left > 20 {
-                //     for _ in 0..26-time_left {
-                //         print!(" ");
-                //     }
-                //     println!("{_i}: {k1}, {_j}: {k2}");
-                // }
+                if time_left > 20 {
+                    for _ in 0..26-time_left {
+                        print!(" ");
+                    }
+                    println!("{_i}: {k1}, {_j}: {k2}");
+                }
 
                 let rate1 = valves.get(k1).unwrap().rate;
                 let rate2 = valves.get(k2).unwrap().rate;
                 valves.get_mut(k1).unwrap().is_open = true;
                 valves.get_mut(k2).unwrap().is_open = true;
+                let pressure = (time_left-d1-1)*rate1 + (time_left-d2-1)*rate2;
                 pressure_released = std::cmp::max(
                     pressure_released,
-                    (time_left-d1-1)*rate1 + (time_left-d2-1)*rate2 + release_pressure2(k1, k2, *d1, *d2, valves, time_left-1)
+                    pressure + release_pressure2(k1, k2, *d1, *d2, valves, time_left-1)
+                );
+                pressure_released = std::cmp::max(
+                    pressure_released,
+                    pressure + release_pressure(k1, valves, time_left-d1-1)
+                );
+                pressure_released = std::cmp::max(
+                    pressure_released,
+                    pressure + release_pressure(k2, valves, time_left-d2-1)
                 );
                 valves.get_mut(k1).unwrap().is_open = false;
                 valves.get_mut(k2).unwrap().is_open = false;
@@ -149,12 +158,12 @@ fn release_pressure2(starta: &str, startb: &str, timea: i64, timeb: i64, valves:
         }
     } else if timea <= 0 {
         for (_i, (k, d)) in tunnels_a.iter().enumerate() {
-            // if time_left > 20 {
-            //     for _ in 0..26-time_left {
-            //         print!(" ");
-            //     }
-            //     println!("{_i}: {k} you ({timeb})");
-            // }
+            if time_left > 20 {
+                for _ in 0..26-time_left {
+                    print!(" ");
+                }
+                println!("{_i}: {k} you ({timeb})");
+            }
 
             let rate = valves.get(k).unwrap().rate;
             valves.get_mut(k).unwrap().is_open = true;
@@ -170,12 +179,12 @@ fn release_pressure2(starta: &str, startb: &str, timea: i64, timeb: i64, valves:
         }
     } else if timeb <= 0 {
         for (_i, (k, d)) in tunnels_b.iter().enumerate() {
-            // if time_left > 20 {
-            //     for _ in 0..26-time_left {
-            //         print!(" ");
-            //     }
-            //     println!("{_i}: {k} eleph ({timea})");
-            // }
+            if time_left > 20 {
+                for _ in 0..26-time_left {
+                    print!(" ");
+                }
+                println!("{_i}: {k} eleph ({timea})");
+            }
 
             let rate = valves.get(k).unwrap().rate;
             valves.get_mut(k).unwrap().is_open = true;
