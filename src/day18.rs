@@ -28,9 +28,7 @@ pub fn chall_1(s: &str) -> i64 {
 
 use std::cmp;
 
-#[derive(Clone)]
-#[derive(Copy)]
-#[derive(PartialEq)]
+#[derive(Clone, Copy, PartialEq)]
 enum Elem {
     Lava,
     Air,

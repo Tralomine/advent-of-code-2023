@@ -7,7 +7,7 @@ struct Elf {
     move_to: Option<(i64, i64)>,
 }
 
-impl std::cmp::PartialEq for Elf {
+impl PartialEq for Elf {
     fn eq(&self, other: &Self) -> bool {
         self.p == other.p
     }

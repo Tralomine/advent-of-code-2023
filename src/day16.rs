@@ -128,12 +128,12 @@ fn release_pressure2(starta: &str, startb: &str, timea: i64, timeb: i64, valves:
         for (_i, (k1, d1)) in tunnels_a.iter().enumerate() {
             for (_j, (k2, d2)) in tunnels_b.iter().enumerate() {
                 if k1 == k2 {continue;}
-                if time_left > 20 {
-                    for _ in 0..26-time_left {
-                        print!(" ");
-                    }
-                    println!("{_i}: {k1}, {_j}: {k2}");
-                }
+                // if time_left > 20 {
+                //     for _ in 0..26-time_left {
+                //         print!(" ");
+                //     }
+                //     println!("{_i}: {k1}, {_j}: {k2}");
+                // }
 
                 let rate1 = valves.get(k1).unwrap().rate;
                 let rate2 = valves.get(k2).unwrap().rate;
@@ -158,12 +158,12 @@ fn release_pressure2(starta: &str, startb: &str, timea: i64, timeb: i64, valves:
         }
     } else if timea <= 0 {
         for (_i, (k, d)) in tunnels_a.iter().enumerate() {
-            if time_left > 20 {
-                for _ in 0..26-time_left {
-                    print!(" ");
-                }
-                println!("{_i}: {k} you ({timeb})");
-            }
+            // if time_left > 20 {
+            //     for _ in 0..26-time_left {
+            //         print!(" ");
+            //     }
+            //     println!("{_i}: {k} you ({timeb})");
+            // }
 
             let rate = valves.get(k).unwrap().rate;
             valves.get_mut(k).unwrap().is_open = true;
@@ -179,12 +179,12 @@ fn release_pressure2(starta: &str, startb: &str, timea: i64, timeb: i64, valves:
         }
     } else if timeb <= 0 {
         for (_i, (k, d)) in tunnels_b.iter().enumerate() {
-            if time_left > 20 {
-                for _ in 0..26-time_left {
-                    print!(" ");
-                }
-                println!("{_i}: {k} eleph ({timea})");
-            }
+            // if time_left > 20 {
+            //     for _ in 0..26-time_left {
+            //         print!(" ");
+            //     }
+            //     println!("{_i}: {k} eleph ({timea})");
+            // }
 
             let rate = valves.get(k).unwrap().rate;
             valves.get_mut(k).unwrap().is_open = true;

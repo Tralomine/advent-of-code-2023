@@ -46,7 +46,3 @@ pub fn chall_1(s: &str) -> String {
     }
     snafu_from_dec(total)
 }
-
-pub fn chall_2(_s: &str) -> i64 {
-    0
-}

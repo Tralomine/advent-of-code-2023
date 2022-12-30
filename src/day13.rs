@@ -18,15 +18,13 @@ impl Elem {
     }
 }
 
-impl std::cmp::PartialEq for Elem {
+impl PartialEq for Elem {
     fn eq(&self, other: &Self) -> bool {
         !(self < other) && !(self > other)
     }
 }
 
-impl std::cmp::Eq for Elem {
-
-}
+impl Eq for Elem {}
 
 impl std::fmt::Debug for Elem {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -38,7 +36,7 @@ impl std::fmt::Debug for Elem {
     }
 }
 
-impl std::cmp::PartialOrd for Elem {
+impl PartialOrd for Elem {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         if self > other {
             Some(std::cmp::Ordering::Greater)
@@ -89,7 +87,7 @@ impl std::cmp::PartialOrd for Elem {
     }
 }
 
-impl std::cmp::Ord for Elem {
+impl Ord for Elem {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         self.partial_cmp(other).unwrap()
     }
