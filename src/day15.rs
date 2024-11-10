@@ -65,7 +65,7 @@ pub fn chall_1(s: &str) -> i64 {
 
 pub fn chall_2(s: &str) -> i64 {
     const MIN: i64 = 0;
-    const MAX: i64 = 20;
+    const MAX: i64 = 4_000_000; // size of the square
 
     let mut sensors = Vec::new();
     let mut beacons = Vec::new();
@@ -81,6 +81,7 @@ pub fn chall_2(s: &str) -> i64 {
         min.1 = cmp::min(min.1, sensor.1);
         max.0 = cmp::max(max.0, sensor.0);
         max.1 = cmp::max(max.1, sensor.1);
+        // min and max distance between a sensor and its closest beacon
 
         sensors.push((sensor, distance));
         
@@ -101,6 +102,7 @@ pub fn chall_2(s: &str) -> i64 {
     // }    //ahah waaaaaayyy too slow
 
     for x in MIN..=MAX {
+        // for each lines, check which sensor touch that line and where it covers it
         let mut min_max = Vec::new();
         for s in &sensors {
             let dist_x = s.1 - (x - s.0.0).abs(); //distance x

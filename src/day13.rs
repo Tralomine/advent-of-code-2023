@@ -38,12 +38,12 @@ impl std::fmt::Debug for Elem {
 
 impl PartialOrd for Elem {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        if self > other {
-            Some(std::cmp::Ordering::Greater)
+        if self < other {
+            Some(std::cmp::Ordering::Less)
         } else if self == other {
             Some(std::cmp::Ordering::Equal)
         } else {
-            Some(std::cmp::Ordering::Less)
+            Some(std::cmp::Ordering::Greater)
         }
     }
 

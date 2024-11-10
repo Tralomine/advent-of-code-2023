@@ -1,33 +1,57 @@
-fn parse(s : &str) -> [i32;4] {
-    let s: Vec<&str> = s.split(&[',', '-']).collect();
-    let mut a = [0;4];
-    for (i, k) in s.iter().enumerate() {
-        a[i] = k.parse().expect("")
+fn parse(s: &str) -> (i32, Vec<i32>, Vec<i32>) {
+    let s: Vec<&str> = s.strip_prefix("Card").unwrap().trim().split(":").collect();
+    let id = s[0].trim().parse().unwrap();
+    let s: Vec<&str> = s[1].split("|").collect();
+    let w: Vec<&str> = s[0].split_ascii_whitespace().collect();
+    let c: Vec<&str> = s[1].split_ascii_whitespace().collect();
+    let mut win = Vec::new();
+    for n in w {
+        win.push(n.parse().unwrap())
     }
-    a
+    let mut cur = Vec::new();
+    for n in c {
+        cur.push(n.parse().unwrap())
+    }
+    (id, win, cur)
 }
 
 pub fn chall_1(s : &String) -> i32 {
-    let mut total = 0;
+    let mut sum = 0;
     for l in s.lines() {
-        let l = parse(l);
-        if  l[0] >= l[2] && l[1] <= l[3] ||
-            l[0] <= l[2] && l[1] >= l[3] {
-            total += 1;
+        let (_, winning, current) = parse(l);
+        let mut res = 0;
+        for c in current {
+            if winning.contains(&c) {
+                res += 1;
+            }
+        }
+        if res > 0 {
+            sum += 2_i32.pow(res-1);
         }
     }
-    total
+    sum
 }
 
 pub fn chall_2(s : &String) -> i32 {
-    let mut total = 0;
+    let mut cards = Vec::new();
     for l in s.lines() {
-        let l = parse(l);
-        if  l[0] >= l[2] && l[0] <= l[3] ||
-            l[1] >= l[2] && l[1] <= l[3] ||
-            l[2] >= l[0] && l[2] <= l[1] {
-            total += 1;
+        cards.push(parse(l));
+    }
+    let mut cards_n = vec![1; cards.len()];
+    for x in 0..cards.len() {
+        let mut res = 0;
+        for c in cards[x].2.clone() {
+            if cards[x].1.contains(&c) {
+                res += 1;
+            }
+        }
+        for y in x+1..x+res+1 {
+            cards_n[y] += cards_n[x];
         }
     }
-    total
+    let mut sum = 0;
+    for n in cards_n {
+        sum += n;
+    }
+    sum
 }

@@ -1,83 +1,125 @@
-fn parse_boxes(s : &str) -> (usize, Vec<Vec<char>>) {
-    let lines: Vec<&str> = s.lines().collect();
-    let i = {
-        let mut i = 0;
-        for (j, l) in lines.iter().enumerate() {
-            if l.as_bytes()[1] == '1' as u8 {
-                i = j;
-                break;
+#[derive(Debug, Clone)]
+struct Map {
+    items: Vec<[i64;3]>,
+}
+
+impl Map {
+    fn new() -> Map {
+        Map {
+            items: Vec::new(),
+        }
+    }
+
+    fn convert(self, n: i64) ->  i64 {
+        for i in self.items {
+            if i[1] <= n && i[1]+i[2] >= n {
+                return n - i[1] + i[0];
             }
         }
-        i
-    };
-    let mut parsed = Vec::new();
-    let box_nbr = {
-        let l = lines[i];
-        (l.as_bytes()[l.len()-2] - '0' as u8) as usize
-    };
-    for _ in 0..box_nbr {
-        parsed.push(Vec::new());
+        n
     }
-    for j in (0..i).rev() {
-        for k in 0..box_nbr {
-            let current_box = lines[j].as_bytes()[k*4+1] as char;
-            if current_box == ' ' {continue;}
-            parsed[k].push(current_box);
+
+    fn cut_range(self, n: (i64, i64)) -> Vec<(i64, i64)> {
+        let mut ranges = Vec::new();
+        ranges.push(n);
+        for i in self.items {
+            
         }
-    }
-    (i+2, parsed)
-}
-
-fn parse_line(line: &str) -> (usize, usize, usize) {
-    let line = line.strip_prefix("move ").expect("invalid line");
-    let line = line.replace(" from ", " to ");
-    let v: Vec<&str> = line.split(" to ").collect();
-    (   v[0].parse::<usize>().expect("invalid line"),
-        v[1].parse::<usize>().expect("invalid line")-1,
-        v[2].parse::<usize>().expect("invalid line")-1)
-}
-
-pub fn chall_1(s : &String) -> String {
-    let (start, mut boxes) = parse_boxes(s);
-    let lines: Vec<&str> = s.lines().collect();
-
-    for i in start..lines.len() {
-        let (a, b, c) = parse_line(lines[i]);
-        for _ in 0..a {
-            let moving_box = boxes[b].pop().expect("empty column");
-            boxes[c].push(moving_box);
-        }
+        ranges
     }
 
-    let mut result = String::new();
-    for mut b in boxes {
-        result += &String::from(b.pop().expect("empty column"));
-    }
-    result
-}
-
-pub fn chall_2(s : &String) -> String {
-    let (start, mut boxes) = parse_boxes(s);
-    let lines: Vec<&str> = s.lines().collect();
-
-    for i in start..lines.len() {
-        let (a, b, c) = parse_line(lines[i]);
-        let mut stack : Vec<char> = Vec::new();
-        for _ in 0..a {
-            let moving_box = boxes[b].pop().expect("empty column");
-            stack.push(moving_box);
-        }
-        loop {
-            match stack.pop() {
-                Some(b) => boxes[c].push(b),
-                None => break,
+    fn get_ranges(self, n: (i64, i64)) -> Vec<(i64, i64)> {
+        let mut ranges = Vec::new();
+        for i in self.items {
+            if i[1] <= n.0  && i[1]+i[2] >= n.0 {
+                if i[1]+i[2] <= n.0+n.1{
+                    ranges.push((n.0-i[1]+i[0], n.1));
+                } else {
+                    ranges.push((n.0-i[1]+i[0], i[1]+i[2] - n.0))
+                }
+            } else if i[1] >= n.0  && i[1] <= n.0+n.1 {
+                if i[1]+i[2] <= n.0+n.1{
+                    ranges.push((i[0], i[2]));
+                } else {
+                    ranges.push((i[0], n.0-i[1]+i[2]))
+                }
+            } else {
+                ranges.push(n);
             }
         }
+        ranges
+    }
+}
+
+
+fn parse(s: &str) -> (Vec<i64>, Vec<Map>) {
+    let first_line = s.lines().collect::<Vec<&str>>()[0];
+    let mut seed_list = Vec::new();
+    for seed in first_line.strip_prefix("seeds: ").unwrap().split(" ") {
+        seed_list.push(seed.parse().unwrap());
+    }
+    let mut maps = Vec::new();
+    let mut cur_map = Map::new();
+    for l in s.lines() {
+        if l.starts_with("seeds") {continue;}
+        if l.ends_with("map:") {continue;}
+        if l.is_empty() {
+            if cur_map.items.len() > 0 {
+                maps.push(cur_map.clone());
+            }
+            cur_map = Map::new();
+            continue;
+        }
+        cur_map.items.push(parse_line(l))
+    }
+    if cur_map.items.len() > 0 {
+        maps.push(cur_map.clone());
+    }
+    (seed_list, maps)
+}
+
+fn parse_line(s: &str) -> [i64;3] {
+    let s : Vec<&str> = s.split(" ").collect();
+    [s[0].parse().unwrap(), s[1].parse().unwrap(), s[2].parse().unwrap()]
+}
+
+pub fn chall_1(s : &String) -> i64 {
+    let (seeds, maps) = parse(s);
+    let mut min = i64::MAX;
+    for s in seeds {
+        let mut i = s;
+        for m in &maps {
+            i = m.clone().convert(i);
+        }
+        if i < min {
+            min = i;
+        }
+    }
+    min
+}
+
+pub fn chall_2(s : &String) -> i64 {
+    let (seeds, maps) = parse(s);
+    let mut seed_ranges = Vec::new();
+    for i in 0..seeds.len()/2 {
+        seed_ranges.push((seeds[i*2], seeds[i*2+1]));
+    }
+    for m in &maps {
+        dbg!(&m, &seed_ranges);
+        let mut new_ranges = Vec::new();
+        for r in seed_ranges {
+            let mut r = m.clone().get_ranges(r);
+            dbg!(&m, &r);
+            new_ranges.append(&mut r);
+        }
+        seed_ranges = new_ranges;
     }
 
-    let mut result = String::new();
-    for mut b in boxes {
-        result += &String::from(b.pop().expect("empty column"));
+    let mut min = i64::MAX;
+    for (i, _) in seed_ranges {
+        if i < min {
+            min = i;
+        }
     }
-    result
+    min
 }
